@@ -1,0 +1,19 @@
+services:
+  postgres_Hotel:
+    container_name: DB_Hotel
+    image: postgres:16.4
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: my_pass
+    ports:
+      - "5432:5432"
+
+  postgres_User:
+    container_name: DB_User
+    image: postgres:16.4
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: my_pass
+    ports:
+      - "5433:5432"
+

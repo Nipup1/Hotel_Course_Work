@@ -1,0 +1,71 @@
+version: '3.8'  
+  
+services:  
+  frontend:  
+    image: react-hotel:latest
+    ports:  
+      - "3000:3000"  
+    depends_on:  
+      - auth-service
+      - hotel-service
+      - user-service  
+  
+  auth-service:  
+    image: go-auth-service:latest
+    ports:  
+      - "8082:8082" 
+    networks:  
+      - backend
+  
+  user-service:  
+    image: go-user-service:latest
+    environment:
+      - DSN=host=db_user user=postgres password=my_pass dbname=userdb port=5432 sslmode=disable
+    ports:  
+      - "8083:8083" 
+    networks:  
+      - backend
+    depends_on:  
+      - db_user  
+  
+  hotel-service:  
+    image: go-hotel-service:latest
+    environment:
+      - DSN=host=db_hotel user=postgres password=my_pass dbname=hoteldb port=5432 sslmode=disable
+    ports:  
+      - "8084:8084" 
+    networks:  
+      - backend
+    depends_on:  
+      - db_hotel   
+  
+  db_user:  
+    image: db_user:latest
+    environment:  
+      POSTGRES_USER: postgres  
+      POSTGRES_PASSWORD: my_pass
+    ports:  
+      - "5433:5432"  
+    volumes:  
+      - db_user:/var/lib/postgresql/data
+    networks:  
+      - backend
+  
+  db_hotel:  
+    image: postgres:16.4
+    environment:  
+      POSTGRES_USER: postgres  
+      POSTGRES_PASSWORD: my_pass
+    ports:  
+      - "5432:5432"  
+    volumes:  
+      - db_hotel:/var/lib/postgresql/data
+    networks:  
+      - backend
+  
+networks:  
+  backend:  
+  
+volumes:  
+  db_hotel:  
+  db_user:  
